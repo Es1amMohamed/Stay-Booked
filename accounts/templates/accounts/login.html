@@ -1,0 +1,74 @@
+{% load socialaccount %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="loginForm" autocomplete="off">
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <a href="{% provider_login_url 'google' %}">Login with Google</a>
+        <button type="submit">Login</button>
+    </form>
+
+    <p id="message"></p>
+    
+        <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(e){
+            e.preventDefault();
+
+            const data = {
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value,
+            };
+
+            try {
+                const response = await fetch("login/api", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                   document.getElementById("message").innerText = result.message || "Login Successfully";
+                } else {
+                    document.getElementById("message").innerText = "Error: " + JSON.stringify(result);
+                }
+            } catch (error) {
+                document.getElementById("message").innerText = "Something went wrong ❌";
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("#loginForm input").forEach(input => {
+                input.value = "";
+            });
+        });
+    </script>
+</body>
+</html>

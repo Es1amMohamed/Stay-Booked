@@ -1,0 +1,80 @@
+
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h1>Register</h1>
+    <form id="registerForm" autocomplete="off">
+        <input type="text" id="username" placeholder="Username" required><br>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="phone" id="phone_number" placeholder="Phone" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <input type="password" id="password2" placeholder="Password" required><br>
+        <a href="{% provider_login_url 'google' %}">Register with Google</a>
+        <button type="submit">Register</button>
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function(e){
+            e.preventDefault();
+
+            const data = {
+                username: document.getElementById("username").value,
+                email: document.getElementById("email").value,
+                phone_number: document.getElementById("phone_number").value,
+                password: document.getElementById("password").value,
+                password2: document.getElementById("password2").value
+            };
+
+            try {
+                const response = await fetch("register/api", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("message").innerText = result.message || "Please Check Your Email To Activate Your Account";
+                    document.getElementById("registerForm").reset();
+                } else {
+                    document.getElementById("message").innerText = "Error: " + JSON.stringify(result);
+                }
+            } catch (error) {
+                document.getElementById("message").innerText = "Something went wrong ❌";
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("#registerForm input").forEach(input => {
+                input.value = "";
+            });
+        });
+    </script>
+</body>
+</html>
