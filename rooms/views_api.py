@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.db.models import Avg
+from django.db.models.functions import Ceil
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from .models import *
@@ -21,13 +23,22 @@ def room_detail_api(request, pk):
 
 @api_view(["GET"])
 def hotels_list_api(request):
-    hotels = Hotel.objects.all()
+    hotels = Hotel.objects.annotate(avg_price_calc=Ceil(Avg("room_hotel__price"))).order_by("name")
+
+    min_price = request.GET.get("min_price")
+    max_price = request.GET.get("max_price")
+
+    if min_price:
+        hotels = hotels.filter(avg_price_calc__gte=min_price)
+    if max_price:
+        hotels = hotels.filter(avg_price_calc__lte=max_price)
+
     paginator = PageNumberPagination()
     paginator.page_size = 5 
     result_page = paginator.paginate_queryset(hotels, request)
     serializer = HotelSerializer(result_page, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
-
+@api_view(["GET"])
 def hotels_detail_api(request, pk):
     hotel = get_object_or_404(Hotel, pk=pk)
     hotel_rooms = Room.objects.filter(hotel=hotel.id)

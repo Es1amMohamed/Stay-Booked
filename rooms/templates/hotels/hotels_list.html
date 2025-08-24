@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
+
+
+
+
+
 <body>
-    <!-- Preloader -->
     <div class="preloader d-flex align-items-center justify-content-center">
         <div class="cssload-container">
             <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
@@ -11,27 +15,42 @@
 
 
 
-    <!-- ##### Breadcumb Area Start ##### -->
     <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url();">
         <div class="bradcumbContent">
             <h2>Stay Booked</h2>
         </div>
     </section>
-    <!-- ##### Breadcumb Area End ##### -->
-
-    <!-- ##### Book Now Area Start ##### -->
     <div class="book-now-area">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-10">
                     <div class="book-now-form text-center">
-                         <form class="position-relative" method="get">
-                            <input id = "hotel-search"
-                                class="form-control search-input search"
-                                type="search"
-                                name="q"
-                                placeholder="Search Hotel..."
-                                aria-label="Search" />
+                        <form class="row g-2 justify-content-center align-items-end" method="get">
+
+                            <div class="col-12 col-md-4">
+                                <input id="hotel-search"
+                                    class="form-control"
+                                    type="search"
+                                    name="q"
+                                    placeholder="Search Hotel..."
+                                    aria-label="Search" />
+                            </div>
+
+    
+                            <div class="col-6 col-md-2">
+                                <input type="number" id="min-price"
+                                    class="form-control"
+                                    placeholder="Min Price" />
+                            </div>
+                          <div class="col-6 col-md-2">
+                                <input type="number" id="max-price"
+                                    class="form-control"
+                                    placeholder="Max Price" />
+                            </div>
+
+                            <div class="col-12 col-md-1">
+                                <button id="filter-btn" class="btn palatin-btn btn-sm w-100 h-100">Filter</button>
+                            </div>
                         </form>
                     </div>
                     <div class="book-now-form">
@@ -40,9 +59,6 @@
             </div>
         </div>
     </div>
-    <!-- ##### Book Now Area End ##### -->
-
-    <!-- ##### Rooms Area Start ##### -->
     <section class="rooms-area section-padding-0-100">
         <div class="container">
             <div class="row justify-content-center">
@@ -97,8 +113,21 @@ const hotelContainer = document.getElementById("hotel-container");
 const hotelTemplate = document.getElementById("hotel-template");
 const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
+const filterBtn = document.getElementById("filter-btn");
+const minPriceInput = document.getElementById("min-price");
+const maxPriceInput = document.getElementById("max-price");
 
 let currentUrl = "http://127.0.0.1:8000/api/hotels/list/";
+
+
+filterBtn.onclick = () => {
+    const minPrice = minPriceInput.value;
+    const maxPrice = maxPriceInput.value;
+    let url = "http://127.0.0.1:8000/api/hotels/list/?";
+    if (minPrice) url += `min_price=${minPrice}&`;
+    if (maxPrice) url += `max_price=${maxPrice}&`;
+    loadHotels(url);
+};
 
 function loadHotels(url) {
     fetch(url)
@@ -139,43 +168,49 @@ loadHotels(currentUrl);
 
 
 <script>
-  $(function () {
+$(function () {
     const $input = $("#hotel-search");
 
     $input.autocomplete({
-      source: function (request, response) {
-        $.ajax({
-          url: "/api/search/hotels/",
-          dataType: "json",
-          data: { q: request.term },
-          success: function (data) {
-            response($.map(data.results, function (item) {
-              return {
-                label: item.name,
-                value: item.name,
-                id: item.id,
-              };
-            }));
-          }
-        });
-      },
-      minLength: 0, 
-      autoFocus: true,
-      select: function (event, ui) {
-        event.preventDefault();
-        if (ui.item && ui.item.id) {
-          window.location.href = "/hotels/" + ui.item.id + "/";
+        source: function (request, response) {
+            $.ajax({
+                url: "/api/search/hotels/",
+                dataType: "json",
+                data: { q: request.term },
+                success: function (data) {
+                    if (data.results.length === 0) {
+                        response([{ label: "No matching hotels found", value: "" }]);
+                    } else {
+                        response($.map(data.results, function (item) {
+                            return {
+                                label: item.name,
+                                value: item.name,
+                                id: item.id,
+                            };
+                        }));
+                    }
+                }
+            });
+        },
+        minLength: 0, 
+        autoFocus: true,
+        select: function (event, ui) {
+            event.preventDefault();
+            if (ui.item && ui.item.id) {
+                window.location.href = "/hotels/" + ui.item.id + "/";
+            }
         }
-      }
     });
+
     $input.on("focus", function () {
-      $(this).autocomplete("search", ""); 
+        $(this).autocomplete("search", ""); 
     });
 
     $input.closest("form").on("submit", function(e) {
-      e.preventDefault();
+        e.preventDefault();
     });
-  });
+});
+
 </script>
 
 </body>

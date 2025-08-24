@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap4',
     "rest_framework_simplejwt",
+    'django_filters',
 
     ## local apps
     'accounts',
@@ -75,6 +76,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ]
+}
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),

@@ -7,7 +7,6 @@ import math
 class Hotel(models.Model):
     name = models.CharField(unique=True,max_length=100)
     image = models.ImageField(upload_to="hotel/")
-    avg_price = models.IntegerField(default=0)
     description = models.TextField(max_length=10000)
     created_at = models.DateTimeField(default=timezone.now)
     slug = models.SlugField(null=True, blank=True)
