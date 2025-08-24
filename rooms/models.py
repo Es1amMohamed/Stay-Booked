@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
+import math
 
 
 class Hotel(models.Model):
@@ -17,8 +18,9 @@ class Hotel(models.Model):
     
     @property
     def avg_price(self):
-        return self.room_hotel.aggregate(models.Avg("price"))["price__avg"] or 0
-    
+
+        avg = self.room_hotel.aggregate(models.Avg("price"))["price__avg"] or 0
+        return math.ceil(avg)
     class Meta:
         ordering = ["name"]
         verbose_name = "Hotel"

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<body>
+    <!-- Preloader -->
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="cssload-container">
+            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+        </div>
+    </div>
+
+
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url();">
+        <div class="bradcumbContent">
+            <h2>Stay Booked</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Book Now Area Start ##### -->
+    <div class="book-now-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="book-now-form text-center">
+                         <form class="position-relative" method="get">
+                            <input id = "hotel-search"
+                                class="form-control search-input search"
+                                type="search"
+                                name="q"
+                                placeholder="Search Hotel..."
+                                aria-label="Search" />
+                        </form>
+                    </div>
+                    <div class="book-now-form">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Book Now Area End ##### -->
+
+    <!-- ##### Rooms Area Start ##### -->
+    <section class="rooms-area section-padding-0-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="section-heading text-center">
+                        <div class="line-"></div>
+                        <h2>Choose your hotel</h2>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" id="hotel-container">
+                <template id="hotel-template">
+                    <div class="col-12 col-md-6 col-lg-4" >
+                        
+                        <div class="single-rooms-area wow fadeInUp" data-wow-delay="100ms" >
+                            <div class="bg-thumbnail bg-img" style="background-image: url();"></div>
+                            <p class="price-from"></p>
+                            <div class="rooms-text">
+                                <div class="line"></div>
+                                <h4 class="hotel-name" ></h4>
+                                <p class="hotel-description"></p>
+                            </div>
+                            <a href="" class="book-room-btn btn palatin-btn">More Details</a>
+                            
+                        </div>
+                    </div>
+                    
+                </template>
+            </div>  
+
+  
+
+            <div class="text-center mt-4">
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                <button id="next-btn" class="btn btn-primary">Next</button>
+            </div>
+        </div>
+    </section>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+
+
+
+<script>
+const hotelContainer = document.getElementById("hotel-container");
+const hotelTemplate = document.getElementById("hotel-template");
+const prevBtn = document.getElementById("prev-btn");
+const nextBtn = document.getElementById("next-btn");
+
+let currentUrl = "http://127.0.0.1:8000/api/hotels/list/";
+
+function loadHotels(url) {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            hotelContainer.innerHTML = "";
+            data.results.forEach(hotel => {
+                const hotelClone = hotelTemplate.content.cloneNode(true);
+                hotelClone.querySelector(".bg-img").style.backgroundImage = `url(${hotel.image})`;
+                hotelClone.querySelector(".price-from").textContent = `From $${hotel.avg_price}`;
+                hotelClone.querySelector(".hotel-name").textContent = hotel.name;
+                hotelClone.querySelector(".hotel-description").textContent = hotel.description || "No description available";
+                hotelClone.querySelector(".book-room-btn").href = `/hotels/${hotel.id}/`;
+                hotelContainer.appendChild(hotelClone);
+            });
+
+            prevBtn.disabled = !data.previous;
+            nextBtn.disabled = !data.next;
+
+            prevBtn.onclick = () => {
+                if (data.previous) {
+                    currentUrl = data.previous;
+                    loadHotels(currentUrl);
+                }
+            };
+
+            nextBtn.onclick = () => {
+                if (data.next) {
+                    currentUrl = data.next;
+                    loadHotels(currentUrl);
+                }
+            };
+        });
+}
+loadHotels(currentUrl);
+</script>
+
+
+
+<script>
+  $(function () {
+    const $input = $("#hotel-search");
+
+    $input.autocomplete({
+      source: function (request, response) {
+        $.ajax({
+          url: "/api/search/hotels/",
+          dataType: "json",
+          data: { q: request.term },
+          success: function (data) {
+            response($.map(data.results, function (item) {
+              return {
+                label: item.name,
+                value: item.name,
+                id: item.id,
+              };
+            }));
+          }
+        });
+      },
+      minLength: 0, 
+      autoFocus: true,
+      select: function (event, ui) {
+        event.preventDefault();
+        if (ui.item && ui.item.id) {
+          window.location.href = "/hotels/" + ui.item.id + "/";
+        }
+      }
+    });
+    $input.on("focus", function () {
+      $(this).autocomplete("search", ""); 
+    });
+
+    $input.closest("form").on("submit", function(e) {
+      e.preventDefault();
+    });
+  });
+</script>
+
+</body>
+
+
+
+
+
+
+
+
+{% endblock body %}
+
+

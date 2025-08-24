@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<body>
+    <!-- Preloader -->
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="cssload-container">
+            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+        </div>
+    </div>
+
+
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url();">
+        <div class="bradcumbContent">
+            <h2>Rooms</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Book Now Area Start ##### -->
+    <div class="book-now-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="book-now-form">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Book Now Area End ##### -->
+
+    <!-- ##### Rooms Area Start ##### -->
+    <section class="rooms-area section-padding-0-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="section-heading text-center">
+                        <div class="line-"></div>
+                        <h2>Choose a room</h2>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" id="room-container">
+
+                <!-- Single Rooms Area -->
+                <template id="room-template">
+                    <div class="col-12 col-md-6 col-lg-4" >
+                        <div class="single-rooms-area wow fadeInUp" data-wow-delay="100ms" >
+                            <!-- Thumbnail -->
+                            
+                            <div class="bg-thumbnail bg-img" style="background-image: url();"></div>
+                            <!-- Price -->
+                            <p class="price-from"></p>
+                            <!-- Rooms Text -->
+                            <div class="rooms-text">
+                                <div class="line"></div>
+                                <h4 class="room-name" ></h4>
+                                <p class="room-description"></p>
+                            </div>
+                            <!-- Book Room -->
+                            <a href="" class="book-room-btn btn palatin-btn">Book Room</a>
+                            
+                        </div>
+                    </div>
+                </template>
+
+            </div>  
+            
+            <!-- {% if units.has_other_pages %} 
+                <div class="col-12">
+  
+                    <div class="pagination-area wow fadeInUp" data-wow-delay="100ms">
+                        <nav>
+                                <ul class="pagination">
+                                    {% for i in units.paginator.page_range %}
+                                    <li class="page-item active"><a class="page-link" href="?page={{i}}">{{i}}.</a></li>
+                                    {% endfor %}
+                                </ul>
+                        </nav>
+                    </div>
+                </div>
+            {% endif %}     -->
+            </div>
+        </div>
+    </section>
+    <!-- ##### Rooms Area End ##### -->
+
+
+</body>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("{% url 'rooms:hotels_detail' pk=hotel_id %}")  
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById("room-container");
+                const template = document.getElementById("room-template");
+
+                if (data.length === 0) {
+                    container.innerHTML = "<li>No rooms available.</li>";
+                } else {
+                    data.data.forEach(room => {
+                        const clone = template.content.cloneNode(true);
+                        clone.querySelector(".room-name").textContent = room.name;
+                        clone.querySelector(".room-description").textContent = room.description;
+                        clone.querySelector(".price-from").textContent = `From $${room.price}/night`;
+                        clone.querySelector(".bg-thumbnail").style.backgroundImage = `url(${room.image})`;
+                        clone.querySelector(".book-room-btn").href = `/rooms/${room.id}`;
+                        container.appendChild(clone);
+                    });
+                }
+            })
+            .catch(error => console.error("Error fetching rooms:", error));
+    });
+</script>
+
+
+{% endblock body %}
+
+
