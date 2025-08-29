@@ -7,6 +7,8 @@ from rest_framework.pagination import PageNumberPagination
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 
 @api_view(["GET"])
@@ -20,6 +22,47 @@ def room_detail_api(request, pk):
     room = get_object_or_404(Room, pk=pk)
     data = RoomSerializer(room, context={"request": request}).data
     return JsonResponse({"data": data})
+
+
+@api_view(['GET'])
+def recommend_rooms(request):
+    budget = request.GET.get("budget")  
+    if not budget:
+        return JsonResponse({"error": "Please provide budget"}, status=400)
+
+    try:
+        budget = float(request.GET.get("budget"))
+    except ValueError:
+        return JsonResponse({"error": "Budget must be a number"}, status=400)  
+      
+    rooms = Room.objects.all()
+    if not rooms.exists():
+        return JsonResponse({"error": "No rooms available"}, status=404)
+
+    X = np.array([[r.price] for r in rooms])
+    y = np.array([r.price for r in rooms])
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    predicted_price = model.predict([[budget]])[0]
+
+    recommended = sorted(
+        rooms,
+        key=lambda r: abs(r.price - predicted_price)
+    )[:5]
+
+    data = [
+        {
+            "id": r.id,
+            "name": r.name,
+            "price": r.price,
+            "image": r.image.url if r.image else None
+        }
+        for r in recommended
+    ]
+
+    return JsonResponse({"recommended_rooms": data})
 
 @api_view(["GET"])
 def hotels_list_api(request):

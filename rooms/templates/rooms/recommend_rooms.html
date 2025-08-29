@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<body>
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="cssload-container">
+            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+        </div>
+    </div>
+
+    <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url();">
+        <div class="bradcumbContent">
+            <h2>Rooms</h2>
+        </div>
+    </section>
+
+<div style="height: 100vh; margin: 0; padding: 0;">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+        <form id="recommend-form" class="form-inline">
+            <input type="number" id="budget" class="form-control mr-2" 
+                placeholder="Enter your budget" required 
+                style="height: 38px;">
+            <button type="submit" class="btn palatin-btn d-flex justify-content-center align-items-center" 
+                style="height: 38px; padding: 0 15px; font-size: 14px;">
+                Get Recommendations
+            </button>
+        </form>
+    </div>
+</div>
+
+
+    <section class="rooms-area section-padding-0-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="section-heading text-center">
+                        <div class="line-"></div>
+                        <h2>Choose a room</h2>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" id="room-container">
+
+                <template id="room-template">
+                    <div class="col-12 col-md-6 col-lg-4" >
+                        <div class="single-rooms-area wow fadeInUp" data-wow-delay="100ms" >
+                            
+                            <div class="bg-thumbnail bg-img" style="background-image: url();"></div>
+                            <p class="price-from"></p>
+                            <div class="rooms-text">
+                                <div class="line"></div>
+                                <h4 class="room-name" ></h4>
+                                <p class="room-description"></p>
+                            </div>
+                            <a href="" class="book-room-btn btn palatin-btn">Book Room</a>
+                            
+                        </div>
+                    </div>
+                </template>
+
+            </div>  
+            
+            </div>
+        </div>
+    </section>
+</body>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("recommend-form");
+    const container = document.getElementById("room-container");
+    const template = document.getElementById("room-template");
+
+    form.onsubmit = async function(e) {
+        e.preventDefault();
+        container.innerHTML = ""; 
+
+        let budget = document.getElementById("budget").value;
+
+        try {
+            let res = await fetch(`/api/recommend/rooms/?budget=${budget}`);
+            let data = await res.json();
+
+            if (data.recommended_rooms) {
+                data.recommended_rooms.forEach(room => {
+                    const clone = template.content.cloneNode(true);
+                    clone.querySelector(".room-name").textContent = room.name;
+                    clone.querySelector(".room-description").textContent = room.description || "";
+                    clone.querySelector(".price-from").textContent = `From $${room.price}/night`;
+                    if (room.image) {
+                        clone.querySelector(".bg-thumbnail").style.backgroundImage = `url(${room.image})`;
+                    }
+                    clone.querySelector(".book-room-btn").href = `/rooms/${room.id}`;
+                    container.appendChild(clone);
+                });
+            } else {
+                container.innerHTML = `<p>${data.error}</p>`;
+            }
+        } catch (error) {
+            console.error("Error fetching recommendations:", error);
+            container.innerHTML = "<p>Something went wrong. Please try again later.</p>";
+        }
+    };
+});
+</script>
+
+
+
+{% endblock body %}
+
+

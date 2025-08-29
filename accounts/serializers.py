@@ -33,3 +33,35 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid email or password.")
         data['user'] = user
         return data
+    
+class UserRegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["email", "username", "phone_number", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        user = CustomUser.objects.create_user(
+            email=validated_data["email"],
+            username=validated_data["username"],
+            phone_number=validated_data["phone_number"],
+            password=validated_data["password"],
+            role="normal",
+        )
+        return user
+    
+
+class HotelManagerCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["email", "username", "phone_number", "password"]
+
+    def create(self, validated_data):
+        user = CustomUser.objects.create_user(
+            email=validated_data["email"],
+            username=validated_data["username"],
+            phone_number=validated_data["phone_number"],
+            password=validated_data["password"],
+            role="hotel_manager",
+        )
+        return user

@@ -17,9 +17,10 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status
 
 
+
 @api_view(['POST'])
 def register_api(request):
-    serializer = RegisterSerializer(data=request.data)
+    serializer = UserRegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
         user.is_active = False
@@ -81,3 +82,4 @@ def activate_account(request,uidb64, token):
         return Response({"success": " Account Activated Successfully"}, status=200)
     else:
         return Response({"error": "Invalid activation link"}, status=400)
+    

@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     "rest_framework_simplejwt",
     'django_filters',
-
+    
     ## local apps
     'accounts',
     'rooms',

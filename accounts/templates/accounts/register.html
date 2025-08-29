@@ -1,25 +1,38 @@
 
+{% extends "base_generic.html" %}
+{% block title %} Register {% endblock title %}
+{% load bootstrap4 %}
 {% load socialaccount %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
+{% block h2 %}  
+<h2>Register</h2>        
+{% endblock h2 %}
+{% block contant%}
+
 <body>
     <h1>Register</h1>
-    <form id="registerForm" autocomplete="off">
-        <input type="text" id="username" placeholder="Username" required><br>
-        <input type="email" id="email" placeholder="Email" required><br>
-        <input type="phone" id="phone_number" placeholder="Phone" required><br>
-        <input type="password" id="password" placeholder="Password" required><br>
-        <input type="password" id="password2" placeholder="Password" required><br>
-        <a href="{% provider_login_url 'google' %}">Register with Google</a>
-        <button type="submit">Register</button>
+    <form id="registerForm" autocomplete="off" style="max-width: 400px; margin: auto; text-align: center;">
+        <input type="text" id="username" class="form-control mb-2" placeholder="Username" required>
+        <input type="email" id="email" class="form-control mb-2" placeholder="Email" required>
+        <input type="phone" id="phone_number" class="form-control mb-2" placeholder="Phone" required>
+        <input type="password" id="password" class="form-control mb-2" placeholder="Password" required>
+        <input type="password" id="password2" class="form-control mb-3" placeholder="Enter Password Again" required>
+
+
+        <button type="submit" class="btn palatin-btn btn-block mb-3" style="height: 40px;" >
+            Register
+        </button>
+
+
+        <a href="{% provider_login_url 'google' %}" class="btn btn-light btn-block d-flex align-items-center justify-content-center"
+        style="border: 1px solid #ddd; height: 40px; text-decoration: none; font-weight: 500;">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                alt="Google" style="width:20px; height:20px; margin-right:8px;">
+            Register with Google
+        </a>
     </form>
 
-    <p id="message"></p>
+
+    <p id="message" class="mt-3 text-center" style="font-size: 14px; color: #555;"></p>
 
     <script>
         document.getElementById("registerForm").addEventListener("submit", async function(e){
@@ -30,7 +43,7 @@
                 email: document.getElementById("email").value,
                 phone_number: document.getElementById("phone_number").value,
                 password: document.getElementById("password").value,
-                password2: document.getElementById("password2").value
+                password2: document.getElementById("password2").value,
             };
 
             try {
@@ -77,4 +90,5 @@
         });
     </script>
 </body>
-</html>
+
+{% endblock %}
