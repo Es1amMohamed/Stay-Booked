@@ -14,7 +14,6 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True, max_length=254)
     username = models.CharField(max_length=50, unique=True)
     phone_number = models.CharField(max_length=20, unique=True)
-    budget = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_active = models.BooleanField(default=False)
     groups = models.ManyToManyField(
         Group,

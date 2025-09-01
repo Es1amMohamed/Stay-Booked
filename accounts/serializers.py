@@ -2,8 +2,9 @@ from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -34,6 +35,16 @@ class LoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
     
+class ChangePasswordSerializer(serializers.Serializer):
+
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if not self.context['request'].user.check_password(data['old_password']):
+            raise serializers.ValidationError("Your old password was entered incorrectly. Please enter it again.")
+        return data
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -50,6 +61,24 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         )
         return user
     
+
+class ResetPasswordRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No user with this email.")
+        return value
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    new_password = serializers.CharField(min_length=6, write_only=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
 
 class HotelManagerCreateSerializer(serializers.ModelSerializer):
     class Meta:

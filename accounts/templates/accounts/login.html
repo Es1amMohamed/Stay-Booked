@@ -1,74 +1,101 @@
+{% extends "base_generic.html" %}
+{% load bootstrap4 %}
 {% load socialaccount %}
 
+{% block title %} Login {% endblock title %}
+{% block h2 %}  
+  <h2>Login</h2>        
+{% endblock h2 %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
+{% block contant %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="login-container p-4 shadow rounded" style="max-width: 350px; width: 100%; background: #fff;">
     <form id="loginForm" autocomplete="off">
-        <input type="email" id="email" placeholder="Email" required><br>
-        <input type="password" id="password" placeholder="Password" required><br>
-        <a href="{% provider_login_url 'google' %}">Login with Google</a>
-        <button type="submit">Login</button>
+      <input type="email" id="email" placeholder="Email" class="form-control mb-2" required>
+      <input type="password" id="password" placeholder="Password" class="form-control mb-2" required>
+      <button type="submit" class="btn palatin-btn btn-block mb-3" style="height: 40px;">Login</button>
+
+
+
     </form>
 
-    <p id="message"></p>
-    
-        <script>
-        document.getElementById("loginForm").addEventListener("submit", async function(e){
-            e.preventDefault();
+    <a href="{% provider_login_url 'google' %}" 
+       class="btn btn-light btn-block d-flex align-items-center justify-content-center mb-2"
+       style="border: 1px solid #ddd; height: 40px; text-decoration: none; font-weight: 500;">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+           alt="Google" style="width:20px; height:20px; margin-right:8px;">
+      Login with Google
+    </a>
 
-            const data = {
-                email: document.getElementById("email").value,
-                password: document.getElementById("password").value,
-            };
+    <div class="text-center">
+        <a href="{% url 'accounts:password_reset_view' %}" class="text-muted" style="font-size: 14px; text-decoration: none;">
+        Forgot Password?
+        </a>
+    </div>
 
-            try {
-                const response = await fetch("login/api", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": getCookie("csrftoken")
-                    },
-                    body: JSON.stringify(data)
-                });
+    <p id="message" class="mt-3 text-center" style="font-size: 14px; color: #555;"></p>
+  </div>
+</div>
 
-                const result = await response.json();
 
-                if (response.ok) {
-                   document.getElementById("message").innerText = result.message || "Login Successfully";
-                } else {
-                    document.getElementById("message").innerText = "Error: " + JSON.stringify(result);
-                }
-            } catch (error) {
-                document.getElementById("message").innerText = "Something went wrong ❌";
-            }
-        });
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async function(e){
+      e.preventDefault();
 
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll("#loginForm input").forEach(input => {
-                input.value = "";
-            });
-        });
-    </script>
-</body>
-</html>
+      const data = {
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+      };
+
+      try {
+          const response = await fetch("api", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCookie("csrftoken")
+              },
+              body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+              localStorage.setItem("access", result.access);
+              localStorage.setItem("refresh", result.refresh);
+
+              const urlParams = new URLSearchParams(window.location.search);
+              const nextUrl = urlParams.get("next") || "/"; 
+
+              window.location.href = nextUrl;
+
+          } else {
+              document.getElementById("message").innerText = "Error: " + JSON.stringify(result);
+          }
+      } catch (error) {
+          document.getElementById("message").innerText = "Something went wrong";
+      }
+  });
+
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll("#loginForm input").forEach(input => {
+          input.value = "";
+      });
+  });
+</script>
+
+{% endblock contant %}

@@ -84,6 +84,7 @@ REST_FRAMEWORK = {
     ]
 }
 
+LOGIN_REDIRECT_URL = '/'
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
