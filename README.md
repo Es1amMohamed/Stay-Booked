@@ -35,8 +35,8 @@ venv\Scripts\activate
 source venv/bin/activate
 
 ### 4. Clone the Repository
-git clone https://github.com/Es1amMohamed/Stay-Booked.git
-cd Stay-Booked
+- git clone https://github.com/Es1amMohamed/Stay-Booked.git
+- cd Stay-Booked
 
 ### 5. Install Requirements
 pip install -r requirements.txt
