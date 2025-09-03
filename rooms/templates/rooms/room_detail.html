@@ -3,38 +3,98 @@
 {% load static %}
 {% block body %}
 
+<style>
 
+  .custom-booking-form .form-control,
+  .custom-booking-form .btn {
+    height: 52px;       
+    line-height: 52px;      
+  }
+  .custom-booking-form .btn {
+    line-height: normal;     
+    color: #fff !important; 
+  }
+  .custom-booking-form .form-control {
+    color: #222;          
+    background-color: #fff;  
+  }
+
+  .custom-booking-form select.form-control {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2rem;
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+  }
+</style>
 
 <body>
     <!-- ##### Breadcumb Area Start ##### -->
     <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url();">
         <div class="bradcumbContent">
-            <h2>News</h2>
+            <h2 id ="room-name"></h2>
         </div>
     </section>
     <!-- ##### Breadcumb Area End ##### -->
 
     <!-- ##### Book Now Area Start ##### -->
-    <div class="book-now-area">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-lg-14">
-                    <div class="book-now-form">
-                        <form action="#" method='POST'>
-                            {% csrf_token %}
-                            <!-- Form Group -->
-                            
 
-                            <!-- Button -->
-                            
-                            <button type="submit" >Book Now</button>
-                            
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="book-now-area">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        <form class="row g-2 align-items-end custom-booking-form" action="{% url 'rooms:reservation_room' room_id %}" method="POST">
+          {% csrf_token %}
+
+          <!-- Adults -->
+          <div class="col-md-2">
+            <label for="adults" class="form-label" style="display:block;">Adults</label>
+            <select id="adults" name="adults" class="form-control" required>
+              <option value="1">1 Adult</option>
+              <option value="2">2 Adults</option>
+              <option value="3">3 Adults</option>
+              <option value="4">4 Adults</option>
+              <option value="5">5 Adults</option>
+            </select>
+          </div>
+
+          <!-- Children -->
+          <div class="col-md-2">
+            <label for="children" class="form-label mb-1">Children</label>
+            <select id="children" name="children" class="form-control" required>
+              <option value="1">1 Child</option>
+              <option value="2">2 Children</option>
+              <option value="3">3 Children</option>
+              <option value="4">4 Children</option>
+              <option value="5">5 Children</option>
+            </select>
+          </div>
+
+          <!-- Check In -->
+          <div class="col-md-3">
+            <label for="check_in" class="form-label mb-1">Check In</label>
+            <input type="date" id="check_in" name="check_in" class="form-control" required>
+          </div>
+
+          <!-- Check Out -->
+          <div class="col-md-3">
+            <label for="check_out" class="form-label mb-1">Check Out</label>
+            <input type="date" id="check_out" name="check_out" class="form-control" required>
+          </div>
+
+          <!-- Submit -->
+          <div class="col-md-2">
+            <label class="d-block mb-1 invisible">.</label>
+            <button type="submit" class="btn palatin-btn w-100">Book Now</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
+
+
     <!-- ##### Book Now Area End ##### -->
 
     <!-- ##### Blog Area Start ##### -->
@@ -74,7 +134,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const roomId = window.location.pathname.split("/").filter(Boolean).pop();
-    fetch(`/api/rooms/${roomId}/`)
+    fetch(`/rooms/api/rooms/${roomId}/`)
         .then(response => response.json())
         .then(data => {
             const room = data.data;
@@ -85,10 +145,50 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("room-hotel").innerText = room.hotel.name;
             document.getElementById("room-description").innerText = room.description;
             document.querySelector(".bg-thumbnail img").src = room.image;
+            document.querySelector("room-id").value = room.id;
         })
         .catch(error => console.error("Error fetching room:", error));
 });
 </script>
+
+<script>
+document.querySelector(".custom-booking-form").addEventListener("submit", async function(e) {
+    e.preventDefault(); 
+
+    const formData = new FormData(this);
+
+    const response = await fetch("{% url 'rooms:reservation_room' room_id %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: formData
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        alert(" Reservation created successfully!");
+    } else {
+
+        if (data.errors && data.errors.non_field_errors) {
+            alert("❌ " + data.errors.non_field_errors.join("\n"));
+        } else {
+            alert("❌ Error: " + JSON.stringify(data.errors));
+        }
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const checkInInput = document.getElementById("check_in");
+  const today = new Date();
+  today.setDate(today.getDate() + 1); 
+  const minDate = today.toISOString().split("T")[0];
+  checkInInput.setAttribute("min", minDate);
+});
+
+</script>
+
 {% endblock body %}
 
 

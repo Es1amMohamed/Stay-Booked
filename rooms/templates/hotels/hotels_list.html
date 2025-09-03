@@ -140,7 +140,7 @@ function loadHotels(url) {
                 hotelClone.querySelector(".price-from").textContent = `From $${hotel.avg_price}`;
                 hotelClone.querySelector(".hotel-name").textContent = hotel.name;
                 hotelClone.querySelector(".hotel-description").textContent = hotel.description || "No description available";
-                hotelClone.querySelector(".book-room-btn").href = `/hotels/${hotel.id}/`;
+                hotelClone.querySelector(".book-room-btn").href = `/rooms/hotels/${hotel.id}/`;
                 hotelContainer.appendChild(hotelClone);
             });
 

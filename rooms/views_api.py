@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from django.db.models.functions import Ceil
 from rest_framework.decorators import api_view
@@ -24,6 +25,21 @@ def room_detail_api(request, pk):
     return JsonResponse({"data": data})
 
 
+@api_view(["POST"])
+@login_required
+def create_reservation_api(request, room_id):
+    serializer = ReservationSerializer(data=request.data, context={"request": request, "room_id": room_id})
+    if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({"data": serializer.data}, status=201)
+    return JsonResponse({"errors": serializer.errors}, status=400)
+
+@login_required
+@api_view(["GET"])
+def my_reservations_api(request):
+    reservations = Reservation.objects.filter(user=request.user)
+    data = ReservationSerializer(reservations, many=True, context={"request": request}).data
+    return JsonResponse({"data": data})
 @api_view(['GET'])
 def recommend_rooms(request):
     budget = request.GET.get("budget")  

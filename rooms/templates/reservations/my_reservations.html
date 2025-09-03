@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block body %}
+<body>
+    <!-- Preloader -->
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="cssload-container">
+            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+        </div>
+    </div>
+
+
+
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url({% static 'img/bg-img/bg-6.jpg' %});">
+        <div class="bradcumbContent">
+            <h2>Reservation</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Book Now Area Start ##### -->
+    <div class="book-now-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="book-now-form">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Book Now Area End ##### -->
+    
+    <!-- ##### Rooms Area Start ##### -->
+    <section class="rooms-area section-padding-0-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="section-heading text-center">
+                        <div class="line-"></div>
+                       
+                    </div>
+                 
+                </div>
+            </div>
+
+            <div class="row">
+
+                <!-- Single Rooms Area -->
+        
+
+        {% if not reservations %}
+
+        <div class="section-heading text-center">
+            <div class="line-"></div>
+
+            <a href="{%url 'rooms:hotels_list_view'  %}" class="book-room-btn btn palatin-btn"> Book Now </a>
+        </div>
+     
+
+        {% else %}
+            {% for reservation in reservations %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="single-rooms-area wow fadeInUp" data-wow-delay="100ms">
+                        <!-- Thumbnail -->
+                        <div class="bg-thumbnail bg-img" style="background-image: url({{reservation.room.image.url}});"></div>
+                        <!-- Price -->
+                        <p class="price-from">From ${{reservation.room.price}}/night</p>
+                        <!-- Rooms Text -->
+                        <div class="rooms-text">
+                            <div class="line"></div>
+                            <h4>{{reservation.room.name}}</h4>
+                            <p>{{reservation.room.description|safe|truncatewords:2}}.</p>
+                        </div>
+                        <!-- Book Room -->
+                        <a href="{% url 'rooms:reservation_detail' reservation.id %}" class="book-room-btn btn palatin-btn">Check reservation</a>
+                    </div>
+                </div>
+
+            {% endfor %}
+            {% endif %}
+
+            </div>
+        </div>
+    </section>
+    <!-- ##### Rooms Area End ##### -->
+
+
+</body>
+
+
+{% endblock body %}

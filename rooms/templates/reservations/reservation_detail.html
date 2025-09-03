@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+
+
+<body>
+    <!-- ##### Breadcumb Area Start ##### -->
+    <section class="breadcumb-area bg-img d-flex align-items-center justify-content-center" style="background-image: url({% static 'img/bg-img/bg-7.jpg' %});">
+        <div class="bradcumbContent">
+            <h2>Reservations</h2>
+        </div>
+    </section>
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Book Now Area Start ##### -->
+    <div class="book-now-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-14">
+                    <div class="book-now-form">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Book Now Area End ##### -->
+
+    <!-- ##### Blog Area Start ##### -->
+    <div class="blog-area section-padding-0-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="palatin-blog-posts">
+
+                        <!-- ##### Single Blog Post ##### -->
+                        <div class="single-blog-post mb-100 wow fadeInUp" data-wow-delay="100ms">
+                            <!-- Post Thumb -->
+                            <div class="blog-post-thumb">
+                                <img src="{{reservation.room.image.url}}" alt="">
+                            </div>
+                            <!-- Post Content -->
+                            <div class="post-content">
+                                <!-- Post Date-->
+                                <h2>Unit name : {{reservation.room.name}}</h2>
+                                <h4>Reservation created at : {{reservation.created_at.date}}.</h4>
+                                <h4>Reservation start : {{reservation.check_in}}.</h4>
+                                <h4>Reservation end : {{reservation.check_out}}.</h4>
+                                <div class="post-meta d-flex justify-content-center">
+                                   
+                                </div>
+                                <a href="{% url 'rooms:cancel_reservation' reservation.id %}" class="book-room-btn btn palatin-btn">Cancel reservation</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Blog Area End ##### -->
+</body>
+{% endblock body %}

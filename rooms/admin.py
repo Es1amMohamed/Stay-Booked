@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(Hotel)
 admin.site.register(Room)
 admin.site.register(Category)
+admin.site.register(Reservation)
+admin.site.register(HotelSubscriber)
