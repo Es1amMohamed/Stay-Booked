@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<body>
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="cssload-container">
+            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+        </div>
+    </div>
+
+
+    <section class="hero-area">
+        <div class="hero-slides owl-carousel">
+
+
+        {% for i in image %}
+            <div class="single-hero-slide d-flex align-items-center justify-content-center">
+                <!-- Slide Img -->
+                
+                <div class="slide-img bg-img" style="background-image: url({{i.image.url}});"></div>   
+                
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-lg-9">
+                            <!-- Slide Content -->
+                            <div class="hero-slides-content" data-animation="fadeInUp" data-delay="100ms">
+                                <div class="line" data-animation="fadeInUp" data-delay="300ms"></div>
+                                <h2 data-animation="fadeInUp" data-delay="500ms">{{i.title}}</h2>
+                                <p data-animation="fadeInUp" data-delay="700ms">{{i.description}}.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+
+        </div>
+    </section>
+
+    <div class="book-now-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="book-now-form">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="about-us-area">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <div class="col-12 col-lg-6">
+                    <div class="about-text text-center mb-100">
+                        <div class="section-heading text-center">
+                            <div class="line-"></div>
+                            <h2>A place to remember</h2>
+                        </div>
+                        <p>Old adage "The place where you find your smile is your true home".</p>
+                        <div class="about-key-text">
+                            <h6><span class="fa fa-check"></span> We are here for you,Enjoy luxury</h6>
+                            <h6><span class="fa fa-check"></span> Why haven't you come yet! we are waiting for you</h6>
+                        </div>
+                        <a href="" class="btn palatin-btn mt-50">Read More</a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="about-thumbnail homepage mb-100">
+                        <div class="first-img wow fadeInUp" data-wow-delay="100ms">
+                            <img src="{%static 'img/bg-img/5.jpg'%}" alt="">
+                        </div>
+                        <div class="second-img wow fadeInUp" data-wow-delay="300ms">
+                            <img src="{%static 'img/bg-img/6.jpg'%}" alt="">
+                        </div>
+                        <div class="third-img wow fadeInUp" data-wow-delay="500ms">
+                            <img src="{%static 'img/bg-img/7.jpg'%}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <section class="pool-area section-padding-100 bg-img bg-fixed" style="background-image: url({%static 'img/bg-img/bg-3.jpg'%});">
+        <div class="container">
+            <div class="row justify-content-end">
+                <div class="col-12 col-lg-7">
+                    <div class="pool-content text-center wow fadeInUp" data-wow-delay="300ms">
+                        <div class="section-heading text-center white">
+                            <div class="line-"></div>
+                            <h2>Infinity Pool</h2>
+                            <p>We have a lot of services that we strive to be as you think, we always develop ourselves for you,
+                                Just your presence here is our advantage.</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 col-sm-4">
+                                <div class="pool-feature">
+                                    <i class="icon-cocktail-1"></i>
+                                    <p>Pool Beachbar</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <div class="pool-feature">
+                                    <i class="icon-swimming-pool"></i>
+                                    <p>Infinity Pool</p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <div class="pool-feature">
+                                    <i class="icon-beach"></i>
+                                    <p>Sunbeds</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Button -->
+                        <a href="{%url 'websitesettings:services'%}" class="btn palatin-btn mt-50">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="rooms-area section-padding-100-0">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="section-heading text-center">
+                        <div class="line-"></div>
+                        <h2>Choose your hotel</h2>
+                        <p>This is a selection of our best hotel.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                {% for hotel in hotels %}
+                <!-- Single Rooms Area -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="single-rooms-area wow fadeInUp" data-wow-delay="100ms">
+                            <!-- Thumbnail -->
+                            <div class="bg-thumbnail bg-img" style="background-image: url({{hotel.image.url}});"></div>
+                            <!-- Price -->
+                            <p class="price-from">Average ${{hotel.avg_price}}/night</p>
+                            <!-- Rooms Text -->
+                            <div class="rooms-text">
+                                <div class="line"></div>
+                                <h4>{{hotel.name}}</h4>
+                                <p>{{hotel.description}}.</p>
+                            </div>
+                            <!-- Book Room -->
+                            <a href="{%url 'rooms:hotels_detail_view' hotel.id%}" class="book-room-btn btn palatin-btn">More Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-12 text-center">
+                            <a href="{% url 'rooms:hotels_list_view' %}" class="btn palatin-btn">Show All Hotels</a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Rooms Area End ##### -->
+
+    <!-- ##### Contact Area Start ##### -->
+    <section class="contact-area d-flex flex-wrap align-items-center">
+        <div class="home-map-area">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22236.40558254599!2d-118.25292394686001!3d34.057682914027104!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2z4Kay4Ka4IOCmj-CmnuCnjeCmnOCnh-CmsuCnh-CmuCwg4KaV4KeN4Kav4Ka-4Kay4Ka_4Kar4KeL4Kaw4KeN4Kao4Ka_4Kav4Ka84Ka-LCDgpq7gpr7gprDgp43gppXgpr_gpqgg4Kav4KeB4KaV4KeN4Kak4Kaw4Ka-4Ka34KeN4Kaf4KeN4Kaw!5e0!3m2!1sbn!2sbd!4v1532328708137" allowfullscreen></iframe>
+        </div>
+        <!-- Contact Info -->
+        <div class="contact-info">
+            <div class="section-heading wow fadeInUp" data-wow-delay="100ms">
+                <div class="line-"></div>
+                <h2>Contact Info</h2>
+                <p>Always feel comfortable in communicating with us,.</p>
+            </div>
+            <h4 class="wow fadeInUp" data-wow-delay="300ms">{{settings.address}}</h4>
+            <h5 class="wow fadeInUp" data-wow-delay="400ms">{{settings.phone_number}}</h5>
+            <h5 class="wow fadeInUp" data-wow-delay="500ms">{{settings.email}}</h5>
+            <!-- Social Info -->
+            <div class="social-info mt-50 wow fadeInUp" data-wow-delay="600ms">
+                <a href="{{settings.fb_link}}"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href="{{settings.tw_link}}"><i class="fa fa-github" aria-hidden="true"></i></a>
+                <a href="{{settings.in_link}}"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Contact Area End ##### -->
+    {% endblock body %}

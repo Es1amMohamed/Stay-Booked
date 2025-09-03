@@ -14,8 +14,8 @@ urlpatterns = [
     path("password/confirm/<uidb64>/<token>/", password_reset_confirm, name="password_reset_confirm_view"),
 
     # API
-    path('register/api', register_api, name='register'),
-    path('login/api', login_api, name='login'),
+    path('register/api', register_api, name='register_api'),
+    path('login/api', login_api, name='login_api'),
     path('password/change/api', change_password, name='change-password'),
     path('activate/<uidb64>/<token>/', activate_account, name='activate-account'),
     path("password/reset/api", reset_password_request, name="password-reset"),

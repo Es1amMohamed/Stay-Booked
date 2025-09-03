@@ -25,9 +25,9 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('rooms.urls', namespace='rooms')),
+    path('rooms/', include('rooms.urls', namespace='rooms')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
-    path('websitesettings/', include('websitesettings.urls', namespace='websitesettings')),
+    path('', include('websitesettings.urls', namespace='websitesettings')),
     path('accounts/', include('allauth.urls')),
 
 

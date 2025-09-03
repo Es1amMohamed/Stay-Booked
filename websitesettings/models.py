@@ -14,11 +14,11 @@ class Settings(models.Model):
         blank=True,
     )
     phone_number = models.CharField(max_length=20)
-    description = models.TextField(max_length=200)
+    description = models.TextField(max_length=1000)
     address = models.CharField(max_length=500, default="Egypt")
-    fb_link = models.URLField(max_length=200)
-    tw_link = models.URLField(max_length=200)
-    in_link = models.URLField(max_length=200)
+    fb_link = models.URLField(max_length=200, null=True, blank=True)
+    tw_link = models.URLField(max_length=200, null=True, blank=True)
+    in_link = models.URLField(max_length=200, null=True, blank=True)
     address_2 = models.CharField(max_length=300, default="Egypt")
 
     def __str__(self):

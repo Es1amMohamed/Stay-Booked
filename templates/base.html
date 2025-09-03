@@ -12,7 +12,7 @@
     <!-- Title -->
      {% block title %}
      {% endblock title %}
-    <!-- <title>{{my_footer.site_name}}</title> -->
+    <title>{{my_footer.site_name}}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{my_footer.logo.url}}">
@@ -35,7 +35,7 @@
                     <nav class="classy-navbar justify-content-between" id="palatinNav">
 
                         <!-- Nav brand -->
-                        <a href="" class="nav-brand"><img src="{{my_footer.logo.url}}" alt="My image"><p>Booking</p></a>
+                        <a href="" class="nav-brand"><img src="{{my_footer.logo.url}}" alt="My image"><p>Stay Booked</p></a>
 
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
@@ -54,22 +54,21 @@
                             <div class="classynav">
                                 <ul>
                                     
-                                    <li class="active"><a href="">Home</a></li>
-                                    <li><a href="">Rooms</a></li>
+                                    <li class="active"><a href="{% url 'websitesettings:home' %}">Home</a></li>
+                                    <li><a href="{% url 'rooms:hotels_list_view' %}">Hotels</a></li>
                                     <li><a href="">Profile</a></li>
                                     <li><a href="">My Reservation</a></li>
                                     <li><a href="#">Pages</a>
                                         <ul class="dropdown">
                                             <li><a href="">Blogs</a></li>
-                                            <li><a href="">About Us</a></li>
-                                            <li><a href="">Services</a></li>
-                                            <li><a href="">Hotels</a></li>
+                                            <li><a href="{% url 'websitesettings:about_us' %}">About Us</a></li>
+                                            <li><a href="{% url 'websitesettings:services' %}">Services</a></li>
                                             <li><a href="https://documenter.getpostman.com/view/29351287/2s9Y5cuLum">API Documantation</a></li> 
                                         </ul>
                                     </li>
                                 {% if request.user.is_authenticated %}      
                                 {% else %}
-                                    <li><a href="">Login</a></li>               
+                                    <li><a href="{% url 'accounts:login' %}">Login</a></li>               
                                 {% endif %}
                                 </ul>
 

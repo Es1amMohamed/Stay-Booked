@@ -117,13 +117,13 @@ const filterBtn = document.getElementById("filter-btn");
 const minPriceInput = document.getElementById("min-price");
 const maxPriceInput = document.getElementById("max-price");
 
-let currentUrl = "http://127.0.0.1:8000/api/hotels/list/";
+let currentUrl = "http://127.0.0.1:8000/rooms/api/hotels/list/";
 
 
 filterBtn.onclick = () => {
     const minPrice = minPriceInput.value;
     const maxPrice = maxPriceInput.value;
-    let url = "http://127.0.0.1:8000/api/hotels/list/?";
+    let url = "http://127.0.0.1:8000/rooms/api/hotels/list/?";
     if (minPrice) url += `min_price=${minPrice}&`;
     if (maxPrice) url += `max_price=${maxPrice}&`;
     loadHotels(url);
@@ -174,7 +174,7 @@ $(function () {
     $input.autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/api/search/hotels/",
+                url: "/rooms/api/search/hotels/",
                 dataType: "json",
                 data: { q: request.term },
                 success: function (data) {

@@ -12,7 +12,7 @@ def home(request):
     settings = Settings.objects.last()
     hotels = Hotel.objects.all()
     image = Image.objects.all()[:3]
-    paginator = Paginator(hotels, 1)
+    paginator = Paginator(hotels, 3)
     page = request.GET.get("page")
     page_ogj = paginator.get_page(page)
     context = {"hotels": page_ogj, "settings": settings, "image": image}
