@@ -7,9 +7,9 @@ app_name = 'rooms'
 
 urlpatterns = [
     
-    path('rooms/list', rooms_list, name='rooms_list_view'),
-    path('rooms/<int:pk>', room_detail, name='room_detail_view'),
-    path("recommend/rooms/", recommend_rooms_view, name="recommend_rooms_view"),
+    path('list/', rooms_list, name='rooms_list_view'),
+    path('<int:pk>/', room_detail, name='room_detail_view'),
+    path("recommend/rooms/", recommend_rooms_view, name="recommend_rooms_view"), 
     path("hotels/list/", hotels_list, name="hotels_list_view"),
     path("hotels/<int:pk>/", hotels_detail, name="hotels_detail_view"),
     path("reservation/list/", my_reservations, name="my_reservations"),

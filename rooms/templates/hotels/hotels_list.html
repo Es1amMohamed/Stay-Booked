@@ -81,6 +81,7 @@
                             <div class="rooms-text">
                                 <div class="line"></div>
                                 <h4 class="hotel-name" ></h4>
+                                <h4 class="hotel-subscribers" ></h4>
                                 <p class="hotel-description"></p>
                             </div>
                             <a href="" class="book-room-btn btn palatin-btn">More Details</a>
@@ -139,9 +140,9 @@ function loadHotels(url) {
                 hotelClone.querySelector(".bg-img").style.backgroundImage = `url(${hotel.image})`;
                 hotelClone.querySelector(".price-from").textContent = `From $${hotel.avg_price}`;
                 hotelClone.querySelector(".hotel-name").textContent = hotel.name;
-                hotelClone.querySelector(".hotel-description").textContent = hotel.description || "No description available";
+                hotelClone.querySelector(".hotel-subscribers").textContent = " Subscribers: " + hotel.subscribers_count;
                 hotelClone.querySelector(".book-room-btn").href = `/rooms/hotels/${hotel.id}/`;
-                hotelContainer.appendChild(hotelClone);
+                hotelContainer.appendChild(hotelClone); 
             });
 
             prevBtn.disabled = !data.previous;

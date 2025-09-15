@@ -4,12 +4,16 @@ from datetime import date
 
 class HotelSerializer(serializers.ModelSerializer):
     avg_price = serializers.SerializerMethodField()
+    subscribers_count = serializers.SerializerMethodField()
     class Meta:
         model = Hotel
-        fields = "__all__"
+        fields = ["name", "image", "image", "description", "avg_price","subscribers_count"]
     
     def get_avg_price(self, obj):
         return obj.avg_price
+    
+    def get_subscribers_count(self, obj):
+        return obj.hotel_subscribed.count()
 class RoomSerializer(serializers.ModelSerializer):
     hotel = HotelSerializer()
     class Meta:

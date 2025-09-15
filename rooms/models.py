@@ -4,6 +4,8 @@ from django.utils import timezone
 import math
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 
@@ -121,7 +123,7 @@ class HotelSubscriber(models.Model):
     def __str__(self):
         return f"{self.guest_name} - {self.hotel_name}"
     
-
+ 
 @receiver(post_save, sender=Reservation)
 def create_hotel_subscriber(sender, instance, created, **kwargs):
     if created:
@@ -130,3 +132,30 @@ def create_hotel_subscriber(sender, instance, created, **kwargs):
             guest_name=instance.guest_name,
             hotel_name=hotel
         )
+    else:
+        pass
+
+
+@receiver(post_save, sender=Room)
+def notify_hotel_subscribers(sender, instance, created, **kwargs):
+    if created:
+        hotel = instance.hotel  
+        subscribers = hotel.hotel_subscribed.all()  
+
+        for sub in subscribers:
+            send_mail(
+                subject=f"New Room Available at {hotel.name}",
+                message=f"""
+                    Hello {sub.guest_name.username},
+
+                    A new room has just been added at {hotel.name}!
+
+                    Room: {instance.name}
+                    Price: {instance.price}
+
+                    Check it out here: http://127.0.0.1:8000/rooms/{instance.id}/
+                    """,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[sub.guest_name.email],
+                        fail_silently=True,
+                    )

@@ -83,7 +83,8 @@ def recommend_rooms(request):
 @api_view(["GET"])
 def hotels_list_api(request):
     hotels = Hotel.objects.annotate(avg_price_calc=Ceil(Avg("room_hotel__price"))).order_by("name")
-
+    hotel = Hotel.objects.get(name= "Hotel1")
+    print(hotel.hotel_subscribed.all())
     min_price = request.GET.get("min_price")
     max_price = request.GET.get("max_price")
 
