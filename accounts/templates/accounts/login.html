@@ -14,9 +14,6 @@
       <input type="email" id="email" placeholder="Email" class="form-control mb-2" required>
       <input type="password" id="password" placeholder="Password" class="form-control mb-2" required>
       <button type="submit" class="btn palatin-btn btn-block mb-3" style="height: 40px;">Login</button>
-
-
-
     </form>
 
     <a href="{% provider_login_url 'google' %}" 
@@ -25,6 +22,12 @@
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
            alt="Google" style="width:20px; height:20px; margin-right:8px;">
       Login with Google
+    </a>
+
+    <a href="{% url 'accounts:register' %}" 
+        class="btn btn-primary btn-block d-flex align-items-center justify-content-center mb-2"
+        style="height: 40px; text-decoration: none; font-weight: 500;">
+        Register
     </a>
 
     <div class="text-center">

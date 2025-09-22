@@ -38,7 +38,14 @@ class HotelManagment(CustomUser):
 
 @receiver(user_signed_up)
 def set_verified_for_google_signup(request, user, sociallogin=None, **kwargs):
+    print("SOCIAL EXTRA DATA:", sociallogin.account.extra_data)
     if user and not user.is_active:
         user.is_active = True
-        user.save()
+        
+    if sociallogin and not user.email:
+        extra_email = sociallogin.account.extra_data.get("email")
+        if extra_email:
+            user.email = extra_email
+
+    user.save()
 

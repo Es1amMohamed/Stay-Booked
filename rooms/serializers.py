@@ -7,7 +7,7 @@ class HotelSerializer(serializers.ModelSerializer):
     subscribers_count = serializers.SerializerMethodField()
     class Meta:
         model = Hotel
-        fields = ["name", "image", "image", "description", "avg_price","subscribers_count"]
+        fields = ["id","name", "image", "image", "description", "avg_price","subscribers_count"]
     
     def get_avg_price(self, obj):
         return obj.avg_price

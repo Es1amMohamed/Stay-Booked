@@ -17,6 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import ValidationError
+from .tasks import send_account_activation_email
 
 
 
@@ -34,12 +35,7 @@ def register_api(request):
         domain = current_site.domain
         activation_link = f"http://{domain}/accounts/activate/{uid}/{token}/"
 
-        send_mail(
-            subject="Activate your account",
-            message=f" Please click the link below to activate your account : {activation_link}",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[user.email],
-        )
+        send_account_activation_email.delay(activation_link, user.email)
 
         return Response({
             'user': serializer.data,

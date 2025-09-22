@@ -4,7 +4,7 @@ from django.utils import timezone
 import math
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.mail import send_mail
+from .tasks import send_new_room_email
 from django.conf import settings
 
 
@@ -141,21 +141,12 @@ def notify_hotel_subscribers(sender, instance, created, **kwargs):
     if created:
         hotel = instance.hotel  
         subscribers = hotel.hotel_subscribed.all()  
-
         for sub in subscribers:
-            send_mail(
-                subject=f"New Room Available at {hotel.name}",
-                message=f"""
-                    Hello {sub.guest_name.username},
-
-                    A new room has just been added at {hotel.name}!
-
-                    Room: {instance.name}
-                    Price: {instance.price}
-
-                    Check it out here: http://127.0.0.1:8000/rooms/{instance.id}/
-                    """,
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[sub.guest_name.email],
-                        fail_silently=True,
-                    )
+            send_new_room_email.delay(
+                hotel_name=hotel.name,
+                room_name=instance.name,
+                room_price=instance.price,
+                room_id=instance.id,
+                guest_username=sub.guest_name.username,
+                guest_email=sub.guest_name.email,
+            )

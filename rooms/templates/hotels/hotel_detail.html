@@ -111,7 +111,7 @@
                         clone.querySelector(".room-description").textContent = room.description;
                         clone.querySelector(".price-from").textContent = `From $${room.price}/night`;
                         clone.querySelector(".bg-thumbnail").style.backgroundImage = `url(${room.image})`;
-                        clone.querySelector(".book-room-btn").href = `/rooms/rooms/${room.id}`;
+                        clone.querySelector(".book-room-btn").href = `/rooms/${room.id}`;
                         container.appendChild(clone);
                     });
                 }

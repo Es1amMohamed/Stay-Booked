@@ -10,6 +10,9 @@ from .serializers import *
 from rest_framework.response import Response
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from django.core.mail import send_mail
+from django.conf import settings
+from .tasks import send_reservation_confirmation_email
 
 
 @api_view(["GET"])
@@ -30,7 +33,17 @@ def room_detail_api(request, pk):
 def create_reservation_api(request, room_id):
     serializer = ReservationSerializer(data=request.data, context={"request": request, "room_id": room_id})
     if serializer.is_valid():
-        serializer.save()
+        reservation = serializer.save()
+        username = request.user.username
+        user_email = request.user.email
+        send_reservation_confirmation_email.delay(
+            user_email,
+            username,
+            reservation.id,
+            room_id,
+            reservation.check_in,
+            reservation.check_out
+        )
         return JsonResponse({"data": serializer.data}, status=201)
     return JsonResponse({"errors": serializer.errors}, status=400)
 
@@ -83,8 +96,6 @@ def recommend_rooms(request):
 @api_view(["GET"])
 def hotels_list_api(request):
     hotels = Hotel.objects.annotate(avg_price_calc=Ceil(Avg("room_hotel__price"))).order_by("name")
-    hotel = Hotel.objects.get(name= "Hotel1")
-    print(hotel.hotel_subscribed.all())
     min_price = request.GET.get("min_price")
     max_price = request.GET.get("max_price")
 
