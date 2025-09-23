@@ -53,8 +53,8 @@ def login_api(request):
         user = serializer.validated_data['user']
         refresh = RefreshToken.for_user(user)
         login(request, user)
-        print(refresh.access_token)
-        print(refresh)
+        print("Access Token",refresh.access_token)
+        # print(refresh)
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
